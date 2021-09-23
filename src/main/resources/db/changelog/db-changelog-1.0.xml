@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.0.xsd "
+	xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog">
+	
+<changeSet author="aand" id="1">
+	<comment>create table country - LET 123</comment>
+	<createTable tableName="country">
+		<column type="int" name="id">
+			<constraints primaryKey="true"/>
+		</column>
+		<column type="varchar(255)" name="name">
+			<constraints nullable="false"/>
+		</column>
+		<column type="varchar(3)" name="isocountrycode">
+			<constraints nullable="false"/>
+		</column>
+		<column type="tinyint" name="eu">
+			<constraints nullable="false"/>
+		</column>
+	</createTable>
+</changeSet>	
+
+<changeSet  author="aand" id="2">  
+    <modifyDataType  tableName="country" columnName="name" newDataType="varchar(500)" />  
+    <rollback>
+     <modifyDataType  tableName="country" columnName="name" newDataType="varchar(255)" /> 
+    </rollback>
+</changeSet>
+
+<changeSet  author="aand" id="3">  
+    <addUniqueConstraint columnNames="isocountrycode"  
+            constraintName="UI_isocode"  
+            tableName="country"  
+            validate="true"/>  
+</changeSet>
+
+<changeSet  author="aand" id="4">  
+    <insert tableName="country">
+    	<column name="id" value="1"/>
+        <column  name="name"  value="Czech republic"/>
+        <column name="isocountrycode" value="CZ"/>  
+        <column name="eu" value="1"/>  
+    </insert>  
+    <rollback>
+    	<delete  tableName="country">  
+        <where>id=1</where>  
+    </delete>  
+    </rollback>
+</changeSet>
+
+<changeSet  author="aand" id="5">  
+    <sql>insert into country values (2,'Germany', 'DE', 1)</sql>  
+     <rollback>
+    	<sql>delete from country where id=2</sql>  
+    </rollback>
+</changeSet>
+
+</databaseChangeLog>
